@@ -11,7 +11,7 @@ namespace League_of_Legends___Command_Line_Interface.Connection
 {
 	public class Request
 	{
-		private string _url = "https://127.0.0.1:";
+		private const string _url = "https://127.0.0.1:";
 		private HttpClient _httpClient;
 		private HttpClientHandler _httpClientHandler;
 
@@ -23,36 +23,17 @@ namespace League_of_Legends___Command_Line_Interface.Connection
 			};
 
 			_httpClientHandler.ServerCertificateCustomValidationCallback = (response, cert, chain, errors) => true;
-
-
 		}
 
-		private void CreateClient()
+		private async Task CreateClient()
 		{
-			string password = Setup.GetPassword();
+			string password = Setup.GetEncodedPassword();
 
-			_httpClient = new HttpClient(_httpClientHandler);
-
-			_httpClient.DefaultRequestHeaders.Add("Authorization", password);
-			_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-			
+			using (HttpClient client = new HttpClient(_httpClientHandler))
+			{
+				client.DefaultRequestHeaders.Add("Authorization", password);
+				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			}
 		}
-
-		//public async Task<HttpResponseMessage> Get()
-		//{
-
-		//}
-
-		//public async Task<HttpResponseMessage> Post()
-		//{
-
-		//}
-
-		//public async Task<HttpResponseMessage> Put()
-		//{
-
-		//}
-
-
 	}
 }

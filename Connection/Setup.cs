@@ -10,10 +10,27 @@ namespace LOL.CLI.Connection
 {
 	public static class Setup
 	{
-		private const string portPattern = @"(?=\d[0-9]{4,5})\w+";
-		private const string tokenPattern = @"(remoting-auth-token=(?<password>.*?(?=""\s)))";
+		private const string _portPattern = @"(?=\d[0-9]{4,5})\w+";
+		private const string _tokenPattern = @"(remoting-auth-token=(?<password>.*?(?=""\s)))";
 
-		private static string Terminal
+        static Setup()
+        {
+            ProcessStartInfo process = new ProcessStartInfo();
+            process.FileName = Terminal;
+            process.Arguments = Argument;
+            process.UseShellExecute = false;
+            process.RedirectStandardOutput = true;
+            // To do: Make exception if client is not open.
+
+            using (Process terminal = Process.Start(process)!)
+			{
+                string output = terminal.StandardOutput.ReadToEnd();
+                Port = new Regex(portPattern, RegexOptions.Compiled).Match(output).Groups[0].Value;
+                Password = new Regex(tokenPattern, RegexOptions.Compiled).Match(output).Groups["password"].Value;
+            }
+        }
+
+        private static string Terminal
 		{
 			get
 			{
@@ -34,39 +51,19 @@ namespace LOL.CLI.Connection
 			}
 		}
 
-		private static string Password
-		{
-			get;
-			set;
-		}
+        private string Password
+        {
+            get;
+            set;
+        }
 
-		public static string Port
-		{
-			get;
-			private set;
-		}
+        public static string Port
+        {
+            get;
+            private set;
+        }
 
-		static Setup()
-		{
-			ProcessStartInfo process = new ProcessStartInfo();
-			process.FileName = Terminal;
-			process.Arguments = Argument;
-			process.UseShellExecute = false;
-			process.RedirectStandardOutput = true;
-			// To do: Make exception if client is not open.
-
-			using (Process terminal = Process.Start(process)!)
-			{
-				string output = terminal.StandardOutput.ReadToEnd();
-				Port = new Regex(portPattern, RegexOptions.Compiled).Match(output).Groups[0].Value;
-				Password = new Regex(tokenPattern, RegexOptions.Compiled).Match(output).Groups["password"].Value;
-			}
-		}
-
-		public static string GetPassword()
-		{
-			string password = $"riot:{Password}";
-			return "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(password));
-		}
+		public static string GetEncodedPassword() =>
+            "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes($"riot:{Password}"));
 	}
 }
