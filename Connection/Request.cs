@@ -23,17 +23,36 @@ namespace League_of_Legends___Command_Line_Interface.Connection
 			};
 
 			_httpClientHandler.ServerCertificateCustomValidationCallback = (response, cert, chain, errors) => true;
+
+
 		}
 
-		private async Task CreateClient()
+		private void CreateClient()
 		{
-			string password = await Setup.GetPassword();
+			string password = Setup.GetPassword();
 
-			using (HttpClient client = new HttpClient(_httpClientHandler))
-			{
-				client.DefaultRequestHeaders.Add("Authorization", password);
-				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-			}
+			_httpClient = new HttpClient(_httpClientHandler);
+
+			_httpClient.DefaultRequestHeaders.Add("Authorization", password);
+			_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			
 		}
+
+		//public async Task<HttpResponseMessage> Get()
+		//{
+
+		//}
+
+		//public async Task<HttpResponseMessage> Post()
+		//{
+
+		//}
+
+		//public async Task<HttpResponseMessage> Put()
+		//{
+
+		//}
+
+
 	}
 }

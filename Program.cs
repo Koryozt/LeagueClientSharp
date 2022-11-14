@@ -9,9 +9,8 @@ namespace LeagueOfLegends.CommandLineInterface
 	{
 		static async Task Main(string[] args)
 		{
-			Request req = new Request();
-
-			Console.WriteLine(await req.Get());
+			Console.WriteLine(Setup.Port);
+			Console.WriteLine(Setup.GetPassword());
 		}
 	}
 }

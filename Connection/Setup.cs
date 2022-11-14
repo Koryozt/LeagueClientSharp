@@ -10,9 +10,9 @@ namespace LOL.CLI.Connection
 {
 	public static class Setup
 	{
-		private static string portPattern = "--app-port=([0-9])*";
-		private static string tokenPattern = "--remoting-auth-token=([\\w-]*)";
-		
+		private const string portPattern = @"(?=\d[0-9]{4,5})\w+";
+		private const string tokenPattern = @"(remoting-auth-token=(?<password>.*?(?=""\s)))";
+
 		private static string Terminal
 		{
 			get
@@ -34,7 +34,19 @@ namespace LOL.CLI.Connection
 			}
 		}
 
-		private static async Task<string> Start()
+		private static string Password
+		{
+			get;
+			set;
+		}
+
+		public static string Port
+		{
+			get;
+			private set;
+		}
+
+		static Setup()
 		{
 			ProcessStartInfo process = new ProcessStartInfo();
 			process.FileName = Terminal;
@@ -45,43 +57,15 @@ namespace LOL.CLI.Connection
 
 			using (Process terminal = Process.Start(process)!)
 			{
-				return await terminal.StandardOutput.ReadToEndAsync();
+				string output = terminal.StandardOutput.ReadToEnd();
+				Port = new Regex(portPattern, RegexOptions.Compiled).Match(output).Groups[0].Value;
+				Password = new Regex(tokenPattern, RegexOptions.Compiled).Match(output).Groups["password"].Value;
 			}
 		}
 
-		public static async Task<string> GetPort()
+		public static string GetPassword()
 		{
-			string content = await Start();
-			string port = string.Empty;
-			Regex regex = new Regex(portPattern);
-			Match match = regex.Match(content);
-
-			if (match.Success)
-			{
-				port = match.Groups[0].Value;
-				port = port.Remove(0, port.IndexOf("=") + 1);
-			}
-
-			return port;
-
-		}
-
-		public static async Task<string> GetPassword()
-		{
-			string content = await Start();
-			string token = string.Empty;
-
-			Regex regex = new Regex(tokenPattern);
-			Match match = regex.Match(content);
-
-			if (match.Success)
-			{
-				token = match.Groups[0].Value;
-				token = token.Remove(0, token.IndexOf("=") + 1);
-			}
-
-			string password = $"riot:{token}";
-
+			string password = $"riot:{Password}";
 			return "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(password));
 		}
 	}
