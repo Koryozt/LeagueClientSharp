@@ -1,10 +1,16 @@
-﻿namespace LeagueOfLegends.CommandLineInterface
+﻿using LOL.CLI.Connection;
+using System.Diagnostics;
+
+namespace LeagueOfLegends.CommandLineInterface
 {
 	public class Program
 	{
-		static void Main(string[] args)
+		static async Task Main(string[] args)
 		{
-			Console.WriteLine("Hello, World!");
+			string pro = await Setup.Start();
+			Console.WriteLine(pro);
+
+
 		}
 	}
 }
