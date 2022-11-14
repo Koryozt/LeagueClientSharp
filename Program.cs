@@ -1,5 +1,7 @@
-﻿using LOL.CLI.Connection;
+﻿using League_of_Legends___Command_Line_Interface.Connection;
+using LOL.CLI.Connection;
 using System.Diagnostics;
+using System.Text;
 
 namespace LeagueOfLegends.CommandLineInterface
 {
@@ -7,10 +9,9 @@ namespace LeagueOfLegends.CommandLineInterface
 	{
 		static async Task Main(string[] args)
 		{
-			string pro = await Setup.Start();
-			Console.WriteLine(pro);
+			Request req = new Request();
 
-
+			Console.WriteLine(await req.Get());
 		}
 	}
 }
