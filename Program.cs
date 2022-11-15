@@ -1,6 +1,7 @@
 ﻿using LOL.CLI.Connection;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 
 namespace LeagueOfLegends.CommandLineInterface
 {
@@ -10,6 +11,13 @@ namespace LeagueOfLegends.CommandLineInterface
 		{
 			Request request = new Request();
 
+			string content = JsonSerializer.Serialize(new
+			{
+				profileIconId = 23
+			});
+
+			using StringContent data = new StringContent(content, Encoding.UTF8, "application/json");
+
 			IEnumerable<string> endpoints = new string[]
 			{
 				"lol-summoner",
@@ -18,7 +26,6 @@ namespace LeagueOfLegends.CommandLineInterface
 				"icon"
 			};
 
-			KeyValuePair<string, string> data = new KeyValuePair<string, string>("profileIconId", "23");
 			HttpResponseMessage response = await request.Execute(HttpMethods.PUT, endpoints, data);
 		}
 	}

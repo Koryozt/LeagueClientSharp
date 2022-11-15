@@ -3,13 +3,14 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>League_of_Legends___Command_Line_Interface</RootNamespace>
+    <RootNamespace>LOL.CLI</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="RiotNetAPI" Version="1.2.0" />
   </ItemGroup>
 
 </Project>

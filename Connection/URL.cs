@@ -15,11 +15,11 @@ namespace LOL.CLI.Connection
 		{
 			_stringBuilder.AppendJoin("/", endpoints);
 
-			//if (queryParameters is not null)
-			//{
-			//	string extension = AddQueryParameters(queryParameters);
-			//	_stringBuilder.Append(extension);
-			//}
+			if (queryParameters.Count() > 1)
+			{
+				string extension = AddQueryParameters(queryParameters);
+				_stringBuilder.Append(extension);
+			}
 
 			return _stringBuilder.ToString();
 		}

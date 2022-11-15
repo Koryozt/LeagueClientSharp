@@ -9,7 +9,6 @@ namespace LOL.CLI.Connection
 		GET,
 		POST,
 		PUT,
-		PATCH,
 		DELETE
 	}
 
@@ -40,58 +39,63 @@ namespace LOL.CLI.Connection
 			_httpClient = new HttpClient(_httpClientHandler);
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", password);
 			_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-			
 		}
 
 		public async Task<HttpResponseMessage> Execute(HttpMethods httpMethod, 
 			IEnumerable<string> endpoints,
-			KeyValuePair<string, string> data,
+			StringContent data,
 			params string[] queryParameters)
+		{
+			string url = URL.Make(endpoints, queryParameters);
+
+			switch(httpMethod)
+			{
+				case HttpMethods.GET:
+					return await Get(url);
+
+				case HttpMethods.POST:
+					return await Post(url, data);
+
+				case HttpMethods.PUT:
+					return await Put(url, data);
+
+				case HttpMethods.DELETE:
+					return await Delete(url);
+
+				default:
+					return null!;
+			}
+		}
+
+		// TODO: Make custom exceptions.
+
+		private async Task<HttpResponseMessage> Get(string url)
 		{
 			try
 			{
-				switch(httpMethod)
-				{
-					case HttpMethods.GET:
+				HttpResponseMessage response = await _httpClient.GetAsync(url);
 
-						string getUrl = URL.Make(endpoints, queryParameters);
-						HttpResponseMessage getResponse = await _httpClient.GetAsync(getUrl);
-						getResponse.EnsureSuccessStatusCode();
+				response.EnsureSuccessStatusCode();
 
-						return getResponse;
+				return response;
+			}
+			catch (Exception)
+			{
 
-						break;
+				throw;
+			}
 
-					case HttpMethods.POST:
+		}
 
-						string postUrl = URL.Make(endpoints, queryParameters);
+		private async Task<HttpResponseMessage> Post(string url, StringContent data)
+		{
+			try
+			{
+				HttpResponseMessage response = await _httpClient.PostAsync(url, data);
 
-						FormUrlEncodedContent postContent = new FormUrlEncodedContent(new[] { data });
-						HttpResponseMessage postResponse = await _httpClient.PostAsync(postUrl, postContent);
+				response.EnsureSuccessStatusCode();
 
-						postResponse.EnsureSuccessStatusCode();
-
-						return postResponse;
-
-						break;
-
-					case HttpMethods.PUT:
-
-						string putUrl = URL.Make(endpoints, queryParameters);
-
-						FormUrlEncodedContent putContent = new FormUrlEncodedContent(new[] { data });
-						Console.WriteLine(putUrl);
-						Console.WriteLine(await putContent.ReadAsStringAsync());
-						HttpResponseMessage putResponse = await _httpClient.PutAsync(putUrl, putContent);
-
-						putResponse.EnsureSuccessStatusCode();
-
-						return putResponse;
-						break;
-
-					default:
-						return null!;
-				}
+				return response;
 			}
 			catch (Exception)
 			{
@@ -100,5 +104,38 @@ namespace LOL.CLI.Connection
 			}
 		}
 
+		private async Task<HttpResponseMessage> Put(string url, StringContent data)
+		{
+			try
+			{
+				HttpResponseMessage response = await _httpClient.PutAsync(url, data);
+
+				response.EnsureSuccessStatusCode();
+
+				return response;
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		}
+
+		private async Task<HttpResponseMessage> Delete(string url)
+		{
+			try
+			{
+				HttpResponseMessage response = await _httpClient.DeleteAsync(url);
+
+				response.EnsureSuccessStatusCode();
+
+				return response;
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		}
 	}
 }

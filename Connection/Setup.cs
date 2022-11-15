@@ -10,7 +10,7 @@ namespace LOL.CLI.Connection
 {
 	public static class Setup
 	{
-		private const string _portPattern = @"(?=\d[0-9]{4,5})\w+";
+		private const string _portPattern = @"(--app-port=([0-9]*))";
 		private const string _tokenPattern = @"(remoting-auth-token=(?<password>.*?(?=""\s)))";
 
         static Setup()
@@ -25,7 +25,7 @@ namespace LOL.CLI.Connection
             using (Process terminal = Process.Start(process)!)
 			{
                 string output = terminal.StandardOutput.ReadToEnd();
-                Port = new Regex(_portPattern, RegexOptions.Compiled).Match(output).Groups[1].Value;
+                Port = new Regex(_portPattern, RegexOptions.Compiled).Match(output).Groups[0].Value[11..];
                 Password = new Regex(_tokenPattern, RegexOptions.Compiled).Match(output).Groups["password"].Value;
             }
         }
@@ -64,6 +64,6 @@ namespace LOL.CLI.Connection
         }
 
 		public static string GetEncodedPassword() =>
-            "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes($"riot:{Password}"));
+            Convert.ToBase64String(Encoding.UTF8.GetBytes($"riot:{Password}"));
 	}
 }
