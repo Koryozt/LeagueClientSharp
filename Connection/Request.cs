@@ -1,21 +1,24 @@
 ﻿using LOL.CLI.Connection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net.Http.Headers;
-using System.Net;
 using Newtonsoft.Json.Linq;
 
-namespace League_of_Legends___Command_Line_Interface.Connection
+namespace LOL.CLI.Connection
 {
+	public enum HttpMethods
+	{
+		GET,
+		POST,
+		PUT,
+		PATCH,
+		DELETE
+	}
+
 	public class Request
 	{
-		private string _url = $"https://127.0.0.1:{Setup.Port}";
 		private HttpClient _httpClient;
-		private HttpClientHandler _httpClientHandler;
+		private readonly HttpClientHandler _httpClientHandler;
 
+		#pragma warning disable
 		public Request()
 		{
 			_httpClientHandler = new()
@@ -25,39 +28,77 @@ namespace League_of_Legends___Command_Line_Interface.Connection
 
 			_httpClientHandler.ServerCertificateCustomValidationCallback = (response, cert, chain, errors) => true;
 
+			CreateClient();
 
 		}
+		#pragma warning enable
 
-		private async Task CreateClient()
+		private void CreateClient()
 		{
 			string password = Setup.GetEncodedPassword();
 
-			using (HttpClient client = new HttpClient(_httpClientHandler))
+			_httpClient = new HttpClient(_httpClientHandler);
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", password);
+			_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			
+		}
+
+		public async Task<HttpResponseMessage> Execute(HttpMethods httpMethod, 
+			IEnumerable<string> endpoints,
+			KeyValuePair<string, string> data,
+			params string[] queryParameters)
+		{
+			try
 			{
-				client.DefaultRequestHeaders.Add("Authorization", password);
-				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+				switch(httpMethod)
+				{
+					case HttpMethods.GET:
+
+						string getUrl = URL.Make(endpoints, queryParameters);
+						HttpResponseMessage getResponse = await _httpClient.GetAsync(getUrl);
+						getResponse.EnsureSuccessStatusCode();
+
+						return getResponse;
+
+						break;
+
+					case HttpMethods.POST:
+
+						string postUrl = URL.Make(endpoints, queryParameters);
+
+						FormUrlEncodedContent postContent = new FormUrlEncodedContent(new[] { data });
+						HttpResponseMessage postResponse = await _httpClient.PostAsync(postUrl, postContent);
+
+						postResponse.EnsureSuccessStatusCode();
+
+						return postResponse;
+
+						break;
+
+					case HttpMethods.PUT:
+
+						string putUrl = URL.Make(endpoints, queryParameters);
+
+						FormUrlEncodedContent putContent = new FormUrlEncodedContent(new[] { data });
+						Console.WriteLine(putUrl);
+						Console.WriteLine(await putContent.ReadAsStringAsync());
+						HttpResponseMessage putResponse = await _httpClient.PutAsync(putUrl, putContent);
+
+						putResponse.EnsureSuccessStatusCode();
+
+						return putResponse;
+						break;
+
+					default:
+						return null!;
+				}
+			}
+			catch (Exception)
+			{
+
+				throw;
 			}
 		}
 
-		public async Task<HttpResponseMessage> Get(string endpoint)
-		{
-			_url += "/" + endpoint;
-			HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
-		}
-
-		public async Task<HttpResponseMessage> Post()
-		{
-
-		}
-
-		public async Task<HttpResponseMessage> Put()
-		{
-
-		}
-
-		public async Task<JObject> GetContent()
-		{
-
-		}
 	}
 }

@@ -1,5 +1,4 @@
-﻿using League_of_Legends___Command_Line_Interface.Connection;
-using LOL.CLI.Connection;
+﻿using LOL.CLI.Connection;
 using System.Diagnostics;
 using System.Text;
 
@@ -9,8 +8,18 @@ namespace LeagueOfLegends.CommandLineInterface
 	{
 		static async Task Main(string[] args)
 		{
-			Console.WriteLine(Setup.Port);
-			Console.WriteLine(Setup.GetPassword());
+			Request request = new Request();
+
+			IEnumerable<string> endpoints = new string[]
+			{
+				"lol-summoner",
+				"v1",
+				"current-summoner",
+				"icon"
+			};
+
+			KeyValuePair<string, string> data = new KeyValuePair<string, string>("profileIconId", "23");
+			HttpResponseMessage response = await request.Execute(HttpMethods.PUT, endpoints, data);
 		}
 	}
 }

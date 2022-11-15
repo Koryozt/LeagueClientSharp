@@ -25,8 +25,8 @@ namespace LOL.CLI.Connection
             using (Process terminal = Process.Start(process)!)
 			{
                 string output = terminal.StandardOutput.ReadToEnd();
-                Port = new Regex(portPattern, RegexOptions.Compiled).Match(output).Groups[0].Value;
-                Password = new Regex(tokenPattern, RegexOptions.Compiled).Match(output).Groups["password"].Value;
+                Port = new Regex(_portPattern, RegexOptions.Compiled).Match(output).Groups[1].Value;
+                Password = new Regex(_tokenPattern, RegexOptions.Compiled).Match(output).Groups["password"].Value;
             }
         }
 
@@ -51,7 +51,7 @@ namespace LOL.CLI.Connection
 			}
 		}
 
-        private string Password
+        private static string Password
         {
             get;
             set;
