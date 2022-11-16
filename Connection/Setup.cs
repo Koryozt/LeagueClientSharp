@@ -13,24 +13,24 @@ namespace LOL.CLI.Connection
 		private const string _portPattern = @"(--app-port=([0-9]*))";
 		private const string _tokenPattern = @"(remoting-auth-token=(?<password>.*?(?=""\s)))";
 
-        static Setup()
-        {
-            ProcessStartInfo process = new ProcessStartInfo();
-            process.FileName = Terminal;
-            process.Arguments = Argument;
-            process.UseShellExecute = false;
-            process.RedirectStandardOutput = true;
-            // To do: Make exception if client is not open.
+		static Setup()
+		{
+			ProcessStartInfo process = new ProcessStartInfo();
+			process.FileName = Terminal;
+			process.Arguments = Argument;
+			process.UseShellExecute = false;
+			process.RedirectStandardOutput = true;
+			// To do: Make exception if client is not open.
 
-            using (Process terminal = Process.Start(process)!)
+			using (Process terminal = Process.Start(process)!)
 			{
-                string output = terminal.StandardOutput.ReadToEnd();
-                Port = new Regex(_portPattern, RegexOptions.Compiled).Match(output).Groups[0].Value[11..];
-                Password = new Regex(_tokenPattern, RegexOptions.Compiled).Match(output).Groups["password"].Value;
-            }
-        }
+				string output = terminal.StandardOutput.ReadToEnd();
+				Port = new Regex(_portPattern, RegexOptions.Compiled).Match(output).Groups[0].Value[11..];
+				Password = new Regex(_tokenPattern, RegexOptions.Compiled).Match(output).Groups["password"].Value;
+			}
+		}
 
-        private static string Terminal
+		private static string Terminal
 		{
 			get
 			{
@@ -51,17 +51,17 @@ namespace LOL.CLI.Connection
 			}
 		}
 
-        private static string Password
-        {
-            get;
-        }
+		private static string Password
+		{
+			get;
+		}
 
-        public static string Port
+		public static string Port
 		{
 			get;
 		}
 
 		public static string GetAuthToken() =>
-            Convert.ToBase64String(Encoding.UTF8.GetBytes($"riot:{Password}"));
+			Convert.ToBase64String(Encoding.UTF8.GetBytes($"riot:{Password}"));
 	}
 }

@@ -38,7 +38,7 @@ namespace LOL.CLI.Connection
 
 		private void CreateClient()
 		{
-			string password = Setup.GetEncodedPassword();
+			string password = Setup.GetAuthToken();
 
 			_httpClient = new HttpClient(_httpClientHandler);
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", password);
