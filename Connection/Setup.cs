@@ -54,16 +54,14 @@ namespace LOL.CLI.Connection
         private static string Password
         {
             get;
-            set;
         }
 
         public static string Port
-        {
-            get;
-            private set;
-        }
+		{
+			get;
+		}
 
-		public static string GetEncodedPassword() =>
+		public static string GetAuthToken() =>
             Convert.ToBase64String(Encoding.UTF8.GetBytes($"riot:{Password}"));
 	}
 }

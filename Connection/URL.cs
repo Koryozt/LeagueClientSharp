@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace LOL.CLI.Connection
 {
@@ -28,7 +30,9 @@ namespace LOL.CLI.Connection
 		{
 			queryParameters = queryParameters.Where(s => !string.IsNullOrEmpty(s));
 
-			return "?" + string.Join("&", queryParameters);
+			string query = "?" + string.Join("&", queryParameters);
+
+			return HttpUtility.UrlEncode(query);
 		}
 	}
 }

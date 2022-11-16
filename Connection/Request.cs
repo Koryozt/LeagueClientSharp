@@ -1,6 +1,7 @@
 ﻿using LOL.CLI.Connection;
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace LOL.CLI.Connection
 {
@@ -32,18 +33,21 @@ namespace LOL.CLI.Connection
 		}
 		#pragma warning enable
 
+		public string AuthorizationValue { get => _httpClient.DefaultRequestHeaders.Authorization.Scheme; }
+		public string MediaType { get => "application/json"; }
+
 		private void CreateClient()
 		{
 			string password = Setup.GetEncodedPassword();
 
 			_httpClient = new HttpClient(_httpClientHandler);
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", password);
-			_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaType));
 		}
 
 		public async Task<HttpResponseMessage> Execute(HttpMethods httpMethod, 
 			IEnumerable<string> endpoints,
-			StringContent data,
+			string data = null,
 			params string[] queryParameters)
 		{
 			string url = URL.Make(endpoints, queryParameters);
@@ -87,11 +91,12 @@ namespace LOL.CLI.Connection
 
 		}
 
-		private async Task<HttpResponseMessage> Post(string url, StringContent data)
+		private async Task<HttpResponseMessage> Post(string url, string data)
 		{
 			try
 			{
-				HttpResponseMessage response = await _httpClient.PostAsync(url, data);
+				StringContent content = new StringContent(data ?? string.Empty, Encoding.UTF8, MediaType);
+				HttpResponseMessage response = await _httpClient.PostAsync(url, content);
 
 				response.EnsureSuccessStatusCode();
 
@@ -104,11 +109,12 @@ namespace LOL.CLI.Connection
 			}
 		}
 
-		private async Task<HttpResponseMessage> Put(string url, StringContent data)
+		private async Task<HttpResponseMessage> Put(string url, string data)
 		{
 			try
 			{
-				HttpResponseMessage response = await _httpClient.PutAsync(url, data);
+				StringContent content = new StringContent(data ?? string.Empty, Encoding.UTF8, MediaType);
+				HttpResponseMessage response = await _httpClient.PutAsync(url, content);
 
 				response.EnsureSuccessStatusCode();
 
