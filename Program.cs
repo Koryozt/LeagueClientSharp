@@ -12,7 +12,7 @@ namespace LeagueOfLegends.CommandLineInterface
 		{
 			RiotClient client = new();
 
-			await client.FlashUX();
+			await client.ShowSwagger();
 		}
 	}
 }

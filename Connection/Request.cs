@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace LOL.CLI.Connection
 {
@@ -33,8 +34,7 @@ namespace LOL.CLI.Connection
 		}
 		#pragma warning enable
 
-		public string AuthorizationValue { get => _httpClient.DefaultRequestHeaders.Authorization.Scheme; }
-		public string MediaType { get => "application/json"; }
+		public readonly string MediaType = "application/json"; 
 
 		private void CreateClient()
 		{

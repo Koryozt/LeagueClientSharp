@@ -1,5 +1,6 @@
 ﻿using LOL.CLI.API.Default.Interfaces;
 using LOL.CLI.Connection;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace LOL.CLI.API.Default
 {
 	public class RiotClient : Base, IRiotClient
 	{
+
 		public async Task<HttpResponseMessage> AllowUXForeground()
 		{
 			IEnumerable<string> endpoints = new string[]
@@ -30,7 +32,7 @@ namespace LOL.CLI.API.Default
 				"app-name"
 			};
 
-			return await Request.Execute(HttpMethods.POST, endpoints);
+			return await Request.Execute(HttpMethods.GET, endpoints);
 		}
 
 		public async Task<HttpResponseMessage> GetAppPort()
@@ -41,7 +43,7 @@ namespace LOL.CLI.API.Default
 				"app-port"
 			};
 
-			return await Request.Execute(HttpMethods.POST, endpoints);
+			return await Request.Execute(HttpMethods.GET, endpoints);
 		}
 
 		public async Task<HttpResponseMessage> GetAuthToken()
@@ -135,39 +137,89 @@ namespace LOL.CLI.API.Default
 			return await Request.Execute(HttpMethods.POST, endppoints);
 		}
 
-		public Task<HttpResponseMessage> GetAffinity()
+		public async Task<HttpResponseMessage> GetAffinity()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"affinity"
+			};
+
+			return await Request.Execute(HttpMethods.GET, endpoints);
 		}
 
-		public Task<HttpResponseMessage> GetCrashReportingEnvironmentID()
+		public async Task<HttpResponseMessage> GetCrashReportingEnvironmentID()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"v1",
+				"crash-reporting",
+				"environment"
+			};
+
+			return await Request.Execute(HttpMethods.GET, endpoints);
 		}
 
-		public Task<HttpResponseMessage> GetRegionLocale()
+		public async Task<HttpResponseMessage> GetRegionLocale()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"region-locale"
+			};
+
+			return await Request.Execute(HttpMethods.GET, endpoints);
 		}
 
-		public Task<HttpResponseMessage> GetSystemInformation()
+		public async Task<HttpResponseMessage> GetSystemInformation()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"system-info",
+				"v1",
+				"basic-info"
+			};
+
+			return await Request.Execute(HttpMethods.GET, endpoints);
 		}
 
-		public Task<HttpResponseMessage> GetZoomScale()
+		public async Task<HttpResponseMessage> GetZoomScale()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"zoom-scale"
+			};
+
+			return await Request.Execute(HttpMethods.GET, endpoints);
 		}
 
-		public Task<HttpResponseMessage> HandleZoomScale()
+		public async Task<HttpResponseMessage> HandleZoomScale(string value)
 		{
-			throw new NotImplementedException();
+			string[] endpoints = new[]
+			{
+				"riotclient",
+				"zoom-scale"
+			},
+			queryParameters = new[]
+			{
+				"newZoomScale=" + value
+			};
+
+			return await Request.Execute(HttpMethods.GET, endpoints, queryParameters: queryParameters);
 		}
 
-		public Task<HttpResponseMessage> HideSplashScreen()
+		public async Task<HttpResponseMessage> HideSplashScreen()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"splash"
+			};
+
+			return await Request.Execute(HttpMethods.DELETE, endpoints);
 		}
 
 		public async Task<HttpResponseMessage> HideUX()
@@ -201,89 +253,221 @@ namespace LOL.CLI.API.Default
 			return await Request.Execute(HttpMethods.POST, endpoints, data);
 		}
 
-		public Task<HttpResponseMessage> IsUXCrashed()
+		public async Task<bool> IsUXCrashed()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"ux-crash-count"
+			};
+
+			HttpResponseMessage response = await Request.Execute(HttpMethods.GET, endpoints);
+
+			string content = await response.Content.ReadAsStringAsync();
+			int value = JObject.Parse(content).ToObject<int>();
+			return value == 1; 
 		}
 
-		public Task<HttpResponseMessage> KillAndRestartUX()
+		public async Task<HttpResponseMessage> KillAndRestartUX()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"kill-and-restart-ux"
+			};
+
+			return await Request.Execute(HttpMethods.POST, endpoints);
 		}
 
-		public Task<HttpResponseMessage> KillUX()
+		public async Task<HttpResponseMessage> KillUX()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"kill-ux"
+			};
+
+			return await Request.Execute(HttpMethods.POST, endpoints);
 		}
 
-		public Task<HttpResponseMessage> LaunchUX()
+		public async Task<HttpResponseMessage> LaunchUX()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"launch-ux"
+			};
+
+			return await Request.Execute(HttpMethods.POST, endpoints);
 		}
 
-		public Task<HttpResponseMessage> MachineID()
+		public async Task<HttpResponseMessage> MachineID()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"machine-id"
+			};
+
+			return await Request.Execute(HttpMethods.GET, endpoints);
 		}
 
-		public Task<HttpResponseMessage> NewArgs()
+
+		public async Task<HttpResponseMessage> RegisterAuthToken(string authToken)
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"v1",
+				"auth-tokens"
+			};
+
+			return await Request.Execute(HttpMethods.PUT, endpoints, queryParameters: authToken);
 		}
 
-		public Task<HttpResponseMessage> RegisterAuthToken(string authToken)
+		public async Task<HttpResponseMessage> SelfUpdateInformation(string url, string uuid)
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new []
+				{
+					"riotclient",
+					"v1",
+					"self-update-info"
+				};
+
+			string data = JsonSerializer.Serialize
+				(
+					new
+					{
+						url = url,
+						uuid = uuid
+					}
+				);
+
+			return await Request.Execute(HttpMethods.PUT, endpoints, data);
+;		}
+
+		public async Task<HttpResponseMessage> SetAffinity(string newAffinity)
+		{
+			IEnumerable<string> endpoints = new[]
+			{
+				"riotclient",
+				"affinity"
+			};
+
+			string data = JsonSerializer.Serialize
+				(
+					new
+					{
+						newAffinity = newAffinity
+					}
+				);
+
+			return await Request.Execute(HttpMethods.POST, endpoints, data);
 		}
 
-		public Task<HttpResponseMessage> SelfUpdateInformation()
+		public async Task<HttpResponseMessage> SetRegionLocale(string region, string locale)
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new[]
+			{
+				"riotclient",
+				"set-region-locale"
+			};
+
+			string data = JsonSerializer.Serialize
+				(
+					new
+					{
+						region = region,
+						locale = locale
+					}
+				);
+
+			return await Request.Execute(HttpMethods.POST, endpoints, data);
 		}
 
-		public Task<HttpResponseMessage> SetAffinity()
+		public async Task<HttpResponseMessage> ShowSplashScreen(string splash)
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"splash"
+			};
+
+			string data = JsonSerializer.Serialize
+				(
+					new
+					{
+						splash = splash
+					}
+				);
+
+			return await Request.Execute(HttpMethods.PUT, endpoints);
 		}
 
-		public Task<HttpResponseMessage> SetRegionLocale()
+		public async Task<HttpResponseMessage> ShowSwagger()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"show-swagger"
+			};
+
+			return await Request.Execute(HttpMethods.POST, endpoints);
 		}
 
-		public Task<HttpResponseMessage> ShowSplashScreen()
+		public async Task<HttpResponseMessage> ShowUX()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"ux-show"
+			};
+
+			return await Request.Execute(HttpMethods.POST, endpoints);
 		}
 
-		public Task<HttpResponseMessage> ShowSwagger()
+		public async Task<HttpResponseMessage> Trace()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[] { "riotclient", "trace" };
+			return await Request.Execute(HttpMethods.GET, endpoints);
 		}
 
-		public Task<HttpResponseMessage> ShowUX()
+		public async Task<HttpResponseMessage> UnloadUX()
 		{
-			throw new NotImplementedException();
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"unload"
+			};
+
+			return await Request.Execute(HttpMethods.POST, endpoints);
 		}
 
-		public Task<HttpResponseMessage> Trace()
+		public async Task<HttpResponseMessage> UnregisterAuthToken(string authToken)
 		{
-			throw new NotImplementedException();
+			string[] endpoints = new[]
+			{
+				"riotclient",
+				"v1",
+				"auth-tokens"
+			},
+			queryParameters = new[]
+			{
+				"authToken=" + authToken
+			};
+
+			return await Request.Execute(HttpMethods.DELETE, endpoints);
 		}
 
-		public Task<HttpResponseMessage> UnloadUX()
+		public async Task<HttpResponseMessage> UXState()
 		{
-			throw new NotImplementedException();
-		}
+			IEnumerable<string> endpoints = new string[]
+			{
+				"riotclient",
+				"ux-state"
+			};
 
-		public Task<HttpResponseMessage> UnregisterAuthToken(string authToken)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<HttpResponseMessage> UXState()
-		{
-			throw new NotImplementedException();
+			return await Request.Execute(HttpMethods.GET, endpoints);
 		}
 	}
 }
