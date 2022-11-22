@@ -1,4 +1,5 @@
-﻿using LOL.CLI.Connection;
+﻿using LOL.CLI.API.Default.Models;
+using LOL.CLI.Connection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace LOL.CLI.API
 {
 	public class Base
 	{
-		protected Request Request { get; } = new Request();
+		protected HttpRequest Request { get; } = new HttpRequest();
 	}
 }

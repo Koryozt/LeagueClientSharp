@@ -10,9 +10,7 @@ namespace LeagueOfLegends.CommandLineInterface
 	{
 		static async Task Main(string[] args)
 		{
-			RiotClient client = new();
 
-			await client.ShowSwagger();
 		}
 	}
 }

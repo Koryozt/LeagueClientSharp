@@ -13,9 +13,9 @@ namespace LOL.CLI.Connection
 		private static string BaseURL { get => $"https://127.0.0.1:{Setup.Port}/"; }
 		private static readonly StringBuilder _stringBuilder = new StringBuilder(BaseURL);
 
-		public static string Make(IEnumerable<string> endpoints, params string[] queryParameters)
+		public static string Make(string endpoint, params string[] queryParameters)
 		{
-			_stringBuilder.AppendJoin("/", endpoints);
+			_stringBuilder.Append(endpoint);
 
 			if (queryParameters.Count() > 1)
 			{

@@ -3,24 +3,17 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using System.ComponentModel;
+using LOL.CLI.API.Models;
 
 namespace LOL.CLI.Connection
 {
-	public enum HttpMethods
-	{
-		GET,
-		POST,
-		PUT,
-		DELETE
-	}
-
-	public class Request
+	public class HttpRequest
 	{
 		private HttpClient _httpClient;
 		private readonly HttpClientHandler _httpClientHandler;
 
 		#pragma warning disable
-		public Request()
+		public HttpRequest()
 		{
 			_httpClientHandler = new()
 			{
@@ -45,14 +38,11 @@ namespace LOL.CLI.Connection
 			_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaType));
 		}
 
-		public async Task<HttpResponseMessage> Execute(HttpMethods httpMethod, 
-			IEnumerable<string> endpoints,
-			string data = null,
-			params string[] queryParameters)
+		public async Task<HttpResponseMessage> Execute(HttpMethods method, string endpoints, string? data = null, params string[] queryParameters)
 		{
 			string url = URL.Make(endpoints, queryParameters);
 
-			switch(httpMethod)
+			switch(method)
 			{
 				case HttpMethods.GET:
 					return await Get(url);
