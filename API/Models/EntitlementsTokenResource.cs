@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LOL.CLI.API.Models
 {
-	public struct EntitlementsTokenResource
+	public class EntitlementsTokenResource
 	{
 		public string? AccessToken { get; set; }
 		public IEnumerable<string>? Entitlements { get; set; }

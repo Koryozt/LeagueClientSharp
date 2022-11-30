@@ -1,5 +1,4 @@
-﻿using LOL.CLI.API.Default.Models;
-using LOL.CLI.Connection;
+﻿using LOL.CLI.Connection;
 using System;
 using System.Collections.Generic;
 using System.Linq;

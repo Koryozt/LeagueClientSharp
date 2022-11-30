@@ -10,7 +10,9 @@ namespace LeagueOfLegends.CommandLineInterface
 	{
 		static async Task Main(string[] args)
 		{
-
+			RiotClient client = new RiotClient();
+			var res = await client.GetAuthToken();
+			Console.WriteLine(Setup.GetAuthToken());
 		}
 	}
 }

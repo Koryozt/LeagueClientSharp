@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LOL.CLI.API.Models
 {
-	public struct Cookie
+	public class Cookie
 	{
 		public string? Domain { get; set; }
 		public int? Expires { get; set; }

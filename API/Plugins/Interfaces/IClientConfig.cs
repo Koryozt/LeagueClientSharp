@@ -11,6 +11,7 @@ namespace LOL.CLI.API.Plugins.Interfaces
 	{
 		Task<HttpResponseMessage> GetClientConfiguration();
 		Task<HttpResponseMessage> GetClientConfiguration(string name);
+		Task<HttpResponseMessage> GetTokenEntitlements();
 		Task<HttpResponseMessage> TokenEntitlements(EntitlementsTokenResource entitlements, string createType);
 		Task<HttpResponseMessage> RefreshConfigStatus();
 		Task<HttpResponseMessage> GetStatus(string type);

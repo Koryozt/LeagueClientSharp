@@ -44,12 +44,12 @@ namespace LOL.CLI.API.Default
 
 		public async Task<HttpResponseMessage> GetProcessMemoryStatus()
 		{
-			return await Request.Execute(HttpMethods.GET, "perfomance/v1/memory");
+			return await Request.Execute(HttpMethods.GET, "performance/v1/memory");
 		}
 
 		public async Task<HttpResponseMessage> GetSystemInformation()
 		{
-			return await Request.Execute(HttpMethods.GET, "perfomance/v1/system-info");
+			return await Request.Execute(HttpMethods.GET, "performance/v1/system-info");
 		}
 
 		public async Task<HttpResponseMessage> IsFrontendProcessReady()
